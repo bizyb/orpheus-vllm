@@ -89,7 +89,17 @@ Baseten is our [preferred inference partner](https://www.baseten.co/blog/canopy-
       print(f"It took {end_time - start_time} seconds to generate {duration:.2f} seconds of audio")
    ```
 
+#### Setup Issues 
 
+If you've cloned this repository and encounter a KV cache error or `max_model_len` property does not exist, use the local package instead of the installed PyPI version:
+
+```python
+import sys
+sys.path.insert(0, 'orpheus_tts_pypi')
+from orpheus_tts import OrpheusModel
+```
+
+This ensures you're using the repository code, which may have fixes not yet published to PyPI. See [#290](https://github.com/canopyai/Orpheus-TTS/issues/290) for more details.
 
 #### Additional Functionality
 
