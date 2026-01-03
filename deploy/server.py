@@ -245,7 +245,7 @@ async def generate_speech_async(
     buffer = []
     count = 0
 
-    async for result in engine.generate(prompt=prompt_string, sampling_params=sampling_params, request_id=request_id):
+    async for result in engine.generate(inputs=prompt_string, sampling_params=sampling_params, request_id=request_id):
         token_text = result.outputs[0].text
         token = turn_token_into_id(token_text, count)
 
