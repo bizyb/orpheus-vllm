@@ -286,18 +286,24 @@ async def lifespan(app: FastAPI):
     gpu_memory_utilization = float(os.environ.get('GPU_MEMORY_UTILIZATION', 0.9))
     snac_device = os.environ.get('SNAC_DEVICE', 'cuda' if torch.cuda.is_available() else 'cpu')
 
+    quantization = os.environ.get('QUANTIZATION', 'fp8')
+
     logger.info(f"Initializing Orpheus TTS server")
     logger.info(f"  Model: {model_name}")
     logger.info(f"  Max model len: {max_model_len}")
     logger.info(f"  GPU memory utilization: {gpu_memory_utilization}")
+    logger.info(f"  Quantization: {quantization}")
     logger.info(f"  SNAC device: {snac_device}")
 
-    # Initialize vLLM engine
+    # Initialize vLLM engine with FP8 quantization for fast inference
+    # FP8 is critical for real-time performance (need 83+ tokens/s)
     engine_args = AsyncEngineArgs(
         model=model_name,
-        dtype=torch.bfloat16,
+        dtype="auto",
         max_model_len=max_model_len,
         gpu_memory_utilization=gpu_memory_utilization,
+        quantization=quantization if quantization != 'none' else None,
+        enable_chunked_prefill=True,
     )
     engine = AsyncLLMEngine.from_engine_args(engine_args)
 
