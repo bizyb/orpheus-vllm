@@ -303,7 +303,6 @@ async def lifespan(app: FastAPI):
         max_model_len=max_model_len,
         gpu_memory_utilization=gpu_memory_utilization,
         quantization=quantization if quantization != 'none' else None,
-        enable_chunked_prefill=True,
     )
     engine = AsyncLLMEngine.from_engine_args(engine_args)
 

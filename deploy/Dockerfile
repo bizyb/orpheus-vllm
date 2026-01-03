@@ -4,9 +4,9 @@
 # Build: docker build -t orpheus-vllm -f deploy/Dockerfile .
 # Run:   docker run --gpus all -p 8000:8000 orpheus-vllm
 
-# Use vLLM 0.8.3 with V1 engine disabled for FP8 quantization support
+# Use vLLM 0.6.2 - stable FP8 support without registry bugs
 # FP8 is critical for real-time performance (83+ tokens/s needed)
-FROM vllm/vllm-openai:v0.8.3
+FROM vllm/vllm-openai:v0.6.2
 
 WORKDIR /app
 
@@ -38,8 +38,6 @@ EXPOSE 8000
 ENV SNAC_DEVICE=cuda
 ENV HF_HOME=/root/.cache/huggingface
 ENV CUDA_VISIBLE_DEVICES=0
-# Disable V1 engine to avoid 30+ min cudagraph compilation
-ENV VLLM_USE_V1=0
 # Default to FP8 quantization for fast inference
 ENV QUANTIZATION=fp8
 
