@@ -4,7 +4,9 @@
 # Build: docker build -t orpheus-vllm -f deploy/Dockerfile .
 # Run:   docker run --gpus all -p 8000:8000 orpheus-vllm
 
-FROM vllm/vllm-openai:v0.8.3
+# Use vLLM 0.7.3 - Orpheus has compatibility issues with newer versions
+# See: https://github.com/canopyai/Orpheus-TTS README
+FROM vllm/vllm-openai:v0.7.3
 
 WORKDIR /app
 
