@@ -12,7 +12,9 @@ WORKDIR /app
 # - snac: Neural audio codec for decoding tokens to audio
 # - flask: For the API server
 # - orpheus-speech: The TTS package (installs from local pypi folder)
-RUN pip install --no-cache-dir snac flask
+# Force reinstall blinker to fix distutils conflict, then install deps
+RUN pip install --no-cache-dir --ignore-installed blinker && \
+    pip install --no-cache-dir snac flask
 
 # Copy the orpheus_tts package from the repo
 COPY orpheus_tts_pypi/orpheus_tts /app/orpheus_tts
