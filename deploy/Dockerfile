@@ -1,0 +1,46 @@
+# Orpheus TTS vLLM Server
+# Uses official vLLM image + Orpheus TTS package
+#
+# Build: docker build -t orpheus-vllm -f deploy/Dockerfile .
+# Run:   docker run --gpus all -p 8000:8000 orpheus-vllm
+
+FROM vllm/vllm-openai:v0.8.3
+
+WORKDIR /app
+
+# Install Orpheus TTS dependencies
+# - snac: Neural audio codec for decoding tokens to audio
+# - flask: For the API server
+# - orpheus-speech: The TTS package (installs from local pypi folder)
+RUN pip install --no-cache-dir snac flask
+
+# Copy the orpheus_tts package from the repo
+COPY orpheus_tts_pypi/orpheus_tts /app/orpheus_tts
+COPY orpheus_tts_pypi/setup.py /app/
+COPY orpheus_tts_pypi/README.md /app/ 2>/dev/null || echo "No README.md"
+
+# Install orpheus_tts as a package
+RUN pip install -e .
+
+# Copy the API server
+COPY deploy/server.py /app/server.py
+
+# Pre-download the model and SNAC codec on build (optional, speeds up cold start)
+# Uncomment to bake model weights into the image (increases image size by ~6GB)
+# RUN python3 -c "from orpheus_tts import OrpheusModel; OrpheusModel(model_name='canopylabs/orpheus-tts-0.1-finetune-prod')"
+# RUN python3 -c "from snac import SNAC; SNAC.from_pretrained('hubertsiuzdak/snac_24khz')"
+
+# Expose API port
+EXPOSE 8000
+
+# Environment variables
+ENV SNAC_DEVICE=cuda
+ENV HF_HOME=/root/.cache/huggingface
+ENV CUDA_VISIBLE_DEVICES=0
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the API server
+ENTRYPOINT ["python3", "/app/server.py"]

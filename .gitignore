@@ -1,1 +1,37 @@
+# OS
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# venv
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test outputs
+output-*.wav
+voice-*.wav
+*.wav
+
+# Cache
+.cache/
+*.cache
+
+# Logs
+*.log
