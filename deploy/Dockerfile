@@ -8,13 +8,10 @@ FROM vllm/vllm-openai:v0.8.3
 
 WORKDIR /app
 
-# Install Orpheus TTS dependencies
+# Install dependencies
 # - snac: Neural audio codec for decoding tokens to audio
-# - flask: For the API server
-# - orpheus-speech: The TTS package (installs from local pypi folder)
-# Force reinstall blinker to fix distutils conflict, then install deps
-RUN pip install --no-cache-dir --ignore-installed blinker && \
-    pip install --no-cache-dir snac flask
+# - fastapi/uvicorn: For the API server
+RUN pip install --no-cache-dir snac fastapi uvicorn
 
 # Copy the orpheus_tts package from the repo
 COPY orpheus_tts_pypi/orpheus_tts /app/orpheus_tts
