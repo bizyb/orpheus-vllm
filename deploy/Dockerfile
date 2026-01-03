@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir snac flask
 # Copy the orpheus_tts package from the repo
 COPY orpheus_tts_pypi/orpheus_tts /app/orpheus_tts
 COPY orpheus_tts_pypi/setup.py /app/
-COPY orpheus_tts_pypi/README.md /app/ 2>/dev/null || echo "No README.md"
+COPY orpheus_tts_pypi/README.md /app/
 
 # Install orpheus_tts as a package
 RUN pip install -e .
